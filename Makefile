@@ -24,12 +24,15 @@ TEST_SRC := tests/test.cpp
 CXXFLAGS := -std=c++20 -Wall -Wextra -I$(INCLUDE_PATHS) -fPIC
 LDFLAGS := -L$(LIB_DIR) -lgfx -Wl,-rpath,$(LIB_DIR)
 
+# Dependency files
+DEPS := $(OBJ:.o=.d)
+
 # Default target
 all: $(SHARED_LIB)
 
 # Compile object files
 $(OBJ_DIR)/%.o: src/%.cpp | $(OBJ_DIR)
-	@$(CXX) $(CXXFLAGS) -c $< -o $@
+	@$(CXX) $(CXXFLAGS) -MMD -MF $(OBJ_DIR)/$*.d -c $< -o $@
 
 # Build shared library
 $(SHARED_LIB): $(OBJ) | $(LIB_DIR)
@@ -50,5 +53,8 @@ $(BUILD_DIR) $(LIB_DIR) $(BIN_DIR) $(OBJ_DIR):
 # Clean rule
 clean:
 	@rm -rf $(BUILD_DIR)
+
+# Include dependency files
+-include $(DEPS)
 
 .PHONY: all clean test
