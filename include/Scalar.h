@@ -5,7 +5,7 @@
 namespace gfx
 {
 
-#define EPSILON 1e5
+#define EPSILON 1e-5f
 
 typedef float Scalar;
 
