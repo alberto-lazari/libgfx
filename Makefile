@@ -10,7 +10,7 @@ TEST_EXE := $(BIN_DIR)/test
 
 # Library Name
 LIB_NAME := gfx
-SHARED_LIB := $(LIB_DIR)/lib$(LIB_NAME).so
+SHARED_LIB := $(LIB_DIR)/lib$(LIB_NAME).dylib
 
 # Source & Headers
 SRC := $(wildcard src/*.cpp)
@@ -36,7 +36,7 @@ $(OBJ_DIR)/%.o: src/%.cpp | $(OBJ_DIR)
 
 # Build shared library
 $(SHARED_LIB): $(OBJ) | $(LIB_DIR)
-	@$(CXX) -shared -o $@ $^
+	@$(CXX) -dynamiclib -o $@ $^
 
 # Compile test program (dynamically links libgfx)
 $(TEST_EXE): $(TEST_SRC) $(SHARED_LIB) | $(BIN_DIR)
