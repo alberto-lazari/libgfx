@@ -22,7 +22,7 @@ TEST_SRC := tests/test.cpp
 
 # Compiler & Linker Flags
 CXXFLAGS := -std=c++20 -Wall -Wextra -I$(INCLUDE_PATHS) -fPIC
-LDFLAGS := -L$(LIB_DIR) -lgfx -Wl,-rpath,$(LIB_DIR)
+LDFLAGS := -L$(LIB_DIR) -l$(LIB_NAME) -Wl,-rpath,$(LIB_DIR)
 
 # Dependency files
 DEPS := $(OBJ:.o=.d)
@@ -38,7 +38,7 @@ $(OBJ_DIR)/%.o: src/%.cpp | $(OBJ_DIR)
 $(SHARED_LIB): $(OBJ) | $(LIB_DIR)
 	@$(CXX) -dynamiclib -o $@ $^
 
-# Compile test program (dynamically links libgfx)
+# Compile test program (dynamically link library)
 $(TEST_EXE): $(TEST_SRC) $(SHARED_LIB) | $(BIN_DIR)
 	@$(CXX) $(CXXFLAGS) $< -o $@ $(LDFLAGS)
 
