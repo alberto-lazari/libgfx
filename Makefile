@@ -1,60 +1,20 @@
-# Compiler
-CXX := g++
-
-# Directories
 BUILD_DIR := build
-LIB_DIR := $(BUILD_DIR)/lib
-BIN_DIR := $(BUILD_DIR)/bin
-OBJ_DIR := $(BUILD_DIR)/obj
-TEST_EXE := $(BIN_DIR)/test
 
-# Library Name
-LIB_NAME := gfx
-SHARED_LIB := $(LIB_DIR)/lib$(LIB_NAME).dylib
+# Default target.
+# Build project and produce dynamic library
+lib: $(BUILD_DIR)
+	@cmake -S . -B "$(BUILD_DIR)"
+	@cmake --build "$(BUILD_DIR)" --target gfx
 
-# Source & Headers
-SRC := $(wildcard src/*.cpp)
-INCLUDE_PATHS := include
-OBJ := $(patsubst src/%.cpp, $(OBJ_DIR)/%.o, $(SRC))
-
-# Test File
-TEST_SRC := tests/test.cpp
-
-# Compiler & Linker Flags
-CXXFLAGS := -std=c++20 -Wall -Wextra -I$(INCLUDE_PATHS) -fPIC
-LDFLAGS := -L$(LIB_DIR) -l$(LIB_NAME) -Wl,-rpath,$(LIB_DIR)
-
-# Dependency files
-DEPS := $(OBJ:.o=.d)
-
-# Default target
-all: $(SHARED_LIB)
-
-# Compile object files
-$(OBJ_DIR)/%.o: src/%.cpp | $(OBJ_DIR)
-	@$(CXX) $(CXXFLAGS) -MMD -MF $(OBJ_DIR)/$*.d -c $< -o $@
-
-# Build shared library
-$(SHARED_LIB): $(OBJ) | $(LIB_DIR)
-	@$(CXX) -dynamiclib -o $@ $^
-
-# Compile test program (dynamically link library)
-$(TEST_EXE): $(TEST_SRC) $(SHARED_LIB) | $(BIN_DIR)
-	@$(CXX) $(CXXFLAGS) $< -o $@ $(LDFLAGS)
-
-# Run tests
-test: $(TEST_EXE)
-	@$(TEST_EXE)
+test: lib
+	@cmake --build "$(BUILD_DIR)" --target test
 
 # Create necessary directories
-$(BUILD_DIR) $(LIB_DIR) $(BIN_DIR) $(OBJ_DIR):
-	@mkdir -p $@
+$(BUILD_DIR):
+	@mkdir -p "$@"
 
 # Clean rule
 clean:
-	@rm -rf $(BUILD_DIR)
+	@rm -rf "$(BUILD_DIR)"
 
-# Include dependency files
--include $(DEPS)
-
-.PHONY: all clean test
+.PHONY: lib test clean
