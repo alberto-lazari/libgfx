@@ -6,6 +6,7 @@ namespace gfx
 {
 
 GFX_API const Vector3 Vector3::origin    = {};
+GFX_API const Vector3 Vector3::zero      = {};
 GFX_API const Vector3 Vector3::infinity  = { INFINITY, INFINITY, INFINITY };
 GFX_API const Vector3 Vector3::right     = { +1, 0, 0 };
 GFX_API const Vector3 Vector3::left      = { -1, 0, 0 };

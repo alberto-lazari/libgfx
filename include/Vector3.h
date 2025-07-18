@@ -16,10 +16,8 @@ struct GFX_API Vector3
     Scalar y;
     Scalar z;
 
-    Vector3() : x(0), y(0), z(0) {}
-    Vector3(Scalar x, Scalar y, Scalar z) : x(x), y(y), z(z) {}
-
     static const Vector3 origin;
+    static const Vector3 zero;
     static const Vector3 infinity;
     static const Vector3 right;
     static const Vector3 left;
