@@ -6,52 +6,154 @@
 
 #include <ostream>
 #include <format>
+#include <cmath>
 
 namespace gfx
 {
 
-struct GFX_API Vector3
+struct Vector3;
+
+constexpr Scalar dot(const Vector3& v, const Vector3& w);
+constexpr Vector3 cross(const Vector3& v, const Vector3& w);
+constexpr Scalar distance(const Vector3& a, const Vector3& b);
+
+struct Vector3
 {
     Scalar x;
     Scalar y;
     Scalar z;
 
-    static const Vector3 origin;
-    static const Vector3 zero;
-    static const Vector3 infinity;
-    static const Vector3 right;
-    static const Vector3 left;
-    static const Vector3 up;
-    static const Vector3 down;
-    static const Vector3 forwards;
-    static const Vector3 backwards;
+    static constexpr Vector3 origin()    { return {}; }
+    static constexpr Vector3 zero()      { return {}; }
+    static constexpr Vector3 one()       { return { 1, 1, 1 }; }
+    static constexpr Vector3 infinity()  { return { INFINITY, INFINITY, INFINITY }; }
+    static constexpr Vector3 right()     { return { .x = +1 }; }
+    static constexpr Vector3 left()      { return { .x = -1 }; }
+    static constexpr Vector3 up()        { return { .y = +1 }; }
+    static constexpr Vector3 down()      { return { .y = -1 }; }
+    static constexpr Vector3 forwards()  { return { .z = +1 }; }
+    static constexpr Vector3 backwards() { return { .z = -1 }; }
 
-    Vector3 operator*(Scalar k) const;
-    Vector3 operator+(const Vector3& v) const;
-    Vector3 operator-(const Vector3& v) const;
-    Vector3 operator-() const;
+    constexpr Vector3 operator*(Scalar k) const
+    {
+        return {
+            x * k,
+            y * k,
+            z * k,
+        };
+    }
 
-    Scalar squared_norm() const;
-    Scalar norm() const;
-    Vector3 normalized() const;
-    Vector3& normalize();
+    constexpr Vector3 operator+(const Vector3& v) const
+    {
+        return {
+            x + v.x,
+            y + v.y,
+            z + v.z,
+        };
+    }
 
-    bool operator==(const Vector3& v) const;
+    constexpr Vector3 operator-() const
+    {
+        return { -x, -y, -z };
+    }
 
-    Vector3& operator*=(Scalar k);
-    Vector3& operator+=(const Vector3& v);
+    constexpr Vector3 operator-(const Vector3& v) const
+    {
+        return *this + -v;
+    }
+
+    constexpr bool operator==(const Vector3& v) const
+    {
+        return x == v.x
+            && y == v.y
+            && z == v.z;
+    }
+
+    constexpr Vector3& operator*=(Scalar k)
+    {
+        x *= k;
+        y *= k;
+        z *= k;
+        return *this;
+    }
+
+    constexpr Vector3& operator+=(const Vector3& v)
+    {
+        x += v.x;
+        y += v.y;
+        z += v.z;
+        return *this;
+    }
+
+
+    constexpr Scalar squared_norm() const
+    {
+        return dot(*this, *this);
+    }
+
+    constexpr Scalar norm() const
+    {
+        return std::sqrt(squared_norm());
+    }
+
+    constexpr Vector3 normalized() const
+    {
+        return *this * (1 / norm());
+    }
+
+    constexpr Vector3& normalize()
+    {
+        return *this *= 1 / norm();
+    }
+
+
+    constexpr Vector3 with_x(Scalar x)
+    {
+        return { x, this->y, this->z };
+    }
+
+    constexpr Vector3 with_y(Scalar y)
+    {
+        return { this->x, y, this->z };
+    }
+
+    constexpr Vector3 with_z(Scalar z)
+    {
+        return { this->x, this->y, z };
+    }
 };
 
-GFX_API Scalar dot(const Vector3& v, const Vector3& w);
-GFX_API Vector3 cross(const Vector3& v, const Vector3& w);
-GFX_API Scalar distance(const Vector3& a, const Vector3& b);
+constexpr Scalar dot(const Vector3& v, const Vector3& w)
+{
+    return v.x * w.x
+        + v.y * w.y
+        + v.z * w.z;
+}
+
+constexpr Vector3 cross(const Vector3& v, const Vector3& w)
+{
+    return {
+        v.y * w.z - v.z * w.y,
+        v.z * w.x - v.x * w.z,
+        v.x * w.y - v.y * w.x,
+    };
+}
+
+constexpr Scalar distance(const Vector3& a, const Vector3& b)
+{
+    return (b - a).norm();
+}
 
 } // namespace gfx
 
 // Scaling commutative closure (k v = v k)
-GFX_API gfx::Vector3 operator*(gfx::Scalar k, const gfx::Vector3& v);
+constexpr gfx::Vector3 operator*(gfx::Scalar k, const gfx::Vector3& v)
+{
+    return v * k;
+}
 
 GFX_API std::ostream& operator<<(std::ostream& os, const gfx::Vector3& v);
+
 
 namespace std
 {

@@ -1,19 +1,15 @@
 #pragma once
 
-#include "gfx.h"
-
 #include "Vector3.h"
+#include "Scalar.h"
 
 namespace gfx
 {
 
-struct GFX_API Sphere
+struct Sphere
 {
     Vector3 center;
     Scalar radius;
-
-    Sphere();
-    Sphere(const Vector3& center, Scalar radius);
 };
 
 } // namespace gfx
