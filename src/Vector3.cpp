@@ -8,43 +8,43 @@ namespace gfx
 GFX_API const Vector3 Vector3::origin    = {};
 GFX_API const Vector3 Vector3::zero      = {};
 GFX_API const Vector3 Vector3::infinity  = { INFINITY, INFINITY, INFINITY };
-GFX_API const Vector3 Vector3::right     = { +1, 0, 0 };
-GFX_API const Vector3 Vector3::left      = { -1, 0, 0 };
-GFX_API const Vector3 Vector3::up        = { 0, +1, 0 };
-GFX_API const Vector3 Vector3::down      = { 0, -1, 0 };
-GFX_API const Vector3 Vector3::forwards  = { 0, 0, +1 };
-GFX_API const Vector3 Vector3::backwards = { 0, 0, -1 };
+GFX_API const Vector3 Vector3::right     = { .x = +1 };
+GFX_API const Vector3 Vector3::left      = { .x = -1 };
+GFX_API const Vector3 Vector3::up        = { .y = +1 };
+GFX_API const Vector3 Vector3::down      = { .y = -1 };
+GFX_API const Vector3 Vector3::forwards  = { .z = +1 };
+GFX_API const Vector3 Vector3::backwards = { .z = -1 };
 
 Vector3 Vector3::operator*(Scalar k) const
 {
-    return Vector3(
+    return {
         x * k,
         y * k,
-        z * k
-    );
+        z * k,
+    };
 }
 
 Vector3 Vector3::operator+(const Vector3& v) const
 {
-    return Vector3(
+    return {
         x + v.x,
         y + v.y,
-        z + v.z
-    );
+        z + v.z,
+    };
 }
 
 Vector3 Vector3::operator-(const Vector3& v) const
 {
-    return Vector3(
+    return {
         x - v.x,
         y - v.y,
-        z - v.z
-    );
+        z - v.z,
+    };
 }
 
 Vector3 Vector3::operator-() const
 {
-    return Vector3(-x, -y, -z);
+    return { -x, -y, -z };
 }
 
 Scalar Vector3::squared_norm() const
@@ -100,11 +100,11 @@ Scalar dot(const Vector3& v, const Vector3& w)
 
 Vector3 cross(const Vector3& v, const Vector3& w)
 {
-    return Vector3(
+    return {
         v.y * w.z - v.z * w.y,
         v.z * w.x - v.x * w.z,
-        v.x * w.y - v.y * w.x
-    );
+        v.x * w.y - v.y * w.x,
+    };
 }
 
 Scalar distance(const Vector3& a, const Vector3& b)
