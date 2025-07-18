@@ -5,14 +5,14 @@
 namespace gfx
 {
 
-const Vector3 Vector3::origin     = Vector3();
-const Vector3 Vector3::infinity   = Vector3(NAN, NAN, NAN);
-const Vector3 Vector3::right      = Vector3(+1, 0, 0);
-const Vector3 Vector3::left       = Vector3(-1, 0, 0);
-const Vector3 Vector3::up         = Vector3(0, +1, 0);
-const Vector3 Vector3::down       = Vector3(0, -1, 0);
-const Vector3 Vector3::forwards   = Vector3(0, 0, +1);
-const Vector3 Vector3::backwards  = Vector3(0, 0, -1);
+GFX_API const Vector3 Vector3::origin    = {};
+GFX_API const Vector3 Vector3::infinity  = { INFINITY, INFINITY, INFINITY };
+GFX_API const Vector3 Vector3::right     = { +1, 0, 0 };
+GFX_API const Vector3 Vector3::left      = { -1, 0, 0 };
+GFX_API const Vector3 Vector3::up        = { 0, +1, 0 };
+GFX_API const Vector3 Vector3::down      = { 0, -1, 0 };
+GFX_API const Vector3 Vector3::forwards  = { 0, 0, +1 };
+GFX_API const Vector3 Vector3::backwards = { 0, 0, -1 };
 
 Vector3 Vector3::operator*(Scalar k) const
 {
@@ -46,24 +46,24 @@ Vector3 Vector3::operator-() const
     return Vector3(-x, -y, -z);
 }
 
-Scalar Vector3::SquaredNorm() const
+Scalar Vector3::squared_norm() const
 {
-    return Dot(*this, *this);
+    return dot(*this, *this);
 }
 
-Scalar Vector3::Norm() const
+Scalar Vector3::norm() const
 {
-    return std::sqrt(SquaredNorm());
+    return std::sqrt(squared_norm());
 }
 
-Vector3 Vector3::Normalized() const
+Vector3 Vector3::normalized() const
 {
-    return *this * (1 / Norm());
+    return *this * (1 / norm());
 }
 
-Vector3& Vector3::Normalize()
+Vector3& Vector3::normalize()
 {
-    return *this *= 1 / Norm();
+    return *this *= 1 / norm();
 }
 
 bool Vector3::operator==(const Vector3& v) const
@@ -90,14 +90,14 @@ Vector3& Vector3::operator+=(const Vector3& v)
 }
 
 
-Scalar Dot(const Vector3& v, const Vector3& w)
+Scalar dot(const Vector3& v, const Vector3& w)
 {
     return v.x * w.x
         + v.y * w.y
         + v.z * w.z;
 }
 
-Vector3 Cross(const Vector3& v, const Vector3& w)
+Vector3 cross(const Vector3& v, const Vector3& w)
 {
     return Vector3(
         v.y * w.z - v.z * w.y,
@@ -106,9 +106,9 @@ Vector3 Cross(const Vector3& v, const Vector3& w)
     );
 }
 
-Scalar Distance(const Vector3& A, const Vector3& B)
+Scalar distance(const Vector3& a, const Vector3& b)
 {
-    return (B - A).Norm();
+    return (b - a).norm();
 }
 
 } // namespace gfx

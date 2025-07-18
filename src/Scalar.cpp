@@ -3,14 +3,14 @@
 namespace gfx
 {
 
-bool IsZero(Scalar k)
+bool is_zero(Scalar k)
 {
     return std::abs(k) < EPSILON;
 }
 
-bool AreEqual(Scalar a, Scalar b)
+bool are_equal(Scalar a, Scalar b)
 {
-    return IsZero(a - b);
+    return is_zero(a - b);
 }
 
 } // namespace gfx

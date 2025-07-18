@@ -1,15 +1,17 @@
 #pragma once
 
+#include "gfx.h"
+
 #include "Vector3.h"
 #include "Sphere.h"
 
 namespace gfx
 {
 
-class Ray
+class GFX_API Ray
 {
 private:
-    Vector3 dir;
+    Vector3 _dir;
 
 public:
     Vector3 start;
@@ -17,12 +19,12 @@ public:
     Ray();
     Ray(const Vector3& start, const Vector3& dir);
 
-    Ray& SetDir(const Vector3& dir);
+    Ray& set_dir(const Vector3& dir);
 
-    const Vector3& Dir() const;
-    Vector3& Dir();
+    const Vector3& dir() const;
+    Vector3& dir();
 
-    Vector3 Intersect(const Sphere& sphere) const;
+    Vector3 intersect(const Sphere& s) const;
 };
 
 } // namespace gfx

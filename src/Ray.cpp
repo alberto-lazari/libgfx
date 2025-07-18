@@ -3,37 +3,45 @@
 namespace gfx
 {
 
-Ray::Ray() : dir(Vector3()), start(Vector3::origin) {}
-Ray::Ray(const Vector3& start, const Vector3& dir)
-    : dir(dir.Normalized()), start(start) {}
-
-Ray& Ray::SetDir(const Vector3& dir)
+Ray::Ray()
+    : _dir(Vector3())
+    , start(Vector3::origin)
 {
-    this->dir = dir.Normalized();
+}
+
+Ray::Ray(const Vector3& start, const Vector3& dir)
+    : _dir(dir.normalized())
+    , start(start)
+{
+}
+
+Ray& Ray::set_dir(const Vector3& dir)
+{
+    _dir = dir.normalized();
     return *this;
 }
 
-const Vector3& Ray::Dir() const
+const Vector3& Ray::dir() const
 {
-    return dir;
+    return _dir;
 }
 
-Vector3& Ray::Dir()
+Vector3& Ray::dir()
 {
-    return dir;
+    return _dir;
 }
 
-Vector3 Ray::Intersect(const Sphere& sphere) const
+Vector3 Ray::intersect(const Sphere& s) const
 {
     const Vector3 G = start;
-	const Vector3 d = dir;
-	const Vector3 C = sphere.center;
-	const Scalar r = sphere.radius;
+	const Vector3 d = _dir;
+	const Vector3 C = s.center;
+	const Scalar r = s.radius;
 
 	// Solve a k^2 + b k + c = 0
-	const Scalar a = d.SquaredNorm();
-	const Scalar b = Dot(G - C, d);
-	const Scalar c = (G - C).SquaredNorm() - r * r;
+	const Scalar a = d.squared_norm();
+	const Scalar b = dot(G - C, d);
+	const Scalar c = (G - C).squared_norm() - r * r;
 
 	const Scalar delta = b * b - a * c;
 	if (delta < 0) return Vector3::infinity;

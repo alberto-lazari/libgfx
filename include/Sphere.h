@@ -1,13 +1,14 @@
 #pragma once
 
+#include "gfx.h"
+
 #include "Vector3.h"
 
 namespace gfx
 {
 
-class Sphere
+struct GFX_API Sphere
 {
-public:
     Vector3 center;
     Scalar radius;
 

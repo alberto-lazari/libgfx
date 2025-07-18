@@ -11,7 +11,7 @@ using gfx::Scalar;
 using gfx::Sphere;
 using gfx::Vector3;
 
-void Vector3OperatorsTest()
+void test_vector3_operators()
 {
     Vector3 v(3, 4, 5);
     assert(v + Vector3(1, 1, 1) == Vector3(4, 5, 6));
@@ -20,31 +20,31 @@ void Vector3OperatorsTest()
     assert(v == Vector3(-3, -4, -5));
 
     const Vector3 w(-1, -30, -8);
-    const Vector3 r = Cross(v, w);
+    const Vector3 r = cross(v, w);
 
-    assert(gfx::IsZero(Dot(r, v)));
-    assert(gfx::IsZero(Dot(r, w)));
+    assert(gfx::is_zero(dot(r, v)));
+    assert(gfx::is_zero(dot(r, w)));
 }
 
-void RaySphereIntersectionTest()
+void test_ray_sphere_intersection()
 {
     const Sphere sphere(Vector3::origin, 5);
     const Ray ray(
         Vector3(10, 10, 10),
         Vector3(-1, -1, -1)
     );
-    const Vector3 hit = ray.Intersect(sphere);
-    const Scalar distance = Distance(hit, sphere.center);
-    std::cout << std::format("Hit point = {}\nDistance from sphere = {}", hit, distance)
+    const Vector3 hit = ray.intersect(sphere);
+    const Scalar dist = distance(hit, sphere.center);
+    std::cout << std::format("Hit point = {}\nDistance from sphere = {}", hit, dist)
         << std::endl;
 
     assert(!(hit == Vector3::infinity));
-    assert(gfx::AreEqual(distance, sphere.radius));
+    assert(gfx::are_equal(dist, sphere.radius));
 }
 
 int main()
 {
-    Vector3OperatorsTest();
-    RaySphereIntersectionTest();
+    test_vector3_operators();
+    test_ray_sphere_intersection();
     return 0;
 }

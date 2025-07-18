@@ -1,15 +1,17 @@
 #pragma once
 
+#include "gfx.h"
+
 #include "Scalar.h"
 
 #include <ostream>
+#include <format>
 
 namespace gfx
 {
 
-class Vector3
+struct GFX_API Vector3
 {
-public:
     Scalar x;
     Scalar y;
     Scalar z;
@@ -17,10 +19,8 @@ public:
     Vector3() : x(0), y(0), z(0) {}
     Vector3(Scalar x, Scalar y, Scalar z) : x(x), y(y), z(z) {}
 
-    // Edge cases
     static const Vector3 origin;
     static const Vector3 infinity;
-    // Axes
     static const Vector3 right;
     static const Vector3 left;
     static const Vector3 up;
@@ -33,10 +33,10 @@ public:
     Vector3 operator-(const Vector3& v) const;
     Vector3 operator-() const;
 
-    Scalar SquaredNorm() const;
-    Scalar Norm() const;
-    Vector3 Normalized() const;
-    Vector3& Normalize();
+    Scalar squared_norm() const;
+    Scalar norm() const;
+    Vector3 normalized() const;
+    Vector3& normalize();
 
     bool operator==(const Vector3& v) const;
 
@@ -44,19 +44,22 @@ public:
     Vector3& operator+=(const Vector3& v);
 };
 
-Scalar Dot(const Vector3& v, const Vector3& w);
-Vector3 Cross(const Vector3& v, const Vector3& w);
-Scalar Distance(const Vector3& A, const Vector3& B);
+GFX_API Scalar dot(const Vector3& v, const Vector3& w);
+GFX_API Vector3 cross(const Vector3& v, const Vector3& w);
+GFX_API Scalar distance(const Vector3& a, const Vector3& b);
 
 } // namespace gfx
 
 // Scaling commutative closure (k v = v k)
-gfx::Vector3 operator*(gfx::Scalar k, const gfx::Vector3& v);
+GFX_API gfx::Vector3 operator*(gfx::Scalar k, const gfx::Vector3& v);
 
-std::ostream& operator<<(std::ostream& os, const gfx::Vector3& v);
+GFX_API std::ostream& operator<<(std::ostream& os, const gfx::Vector3& v);
+
+namespace std
+{
 
 template <>
-struct std::formatter<gfx::Vector3>
+struct formatter<gfx::Vector3>
 {
     constexpr auto parse(std::format_parse_context& ctx) { return ctx.begin(); }
 
@@ -66,3 +69,5 @@ struct std::formatter<gfx::Vector3>
         return std::format_to(ctx.out(), "({}, {}, {})", v.x, v.y, v.z);
     }
 };
+
+} // namespace std
