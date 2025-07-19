@@ -11,12 +11,6 @@
 namespace gfx
 {
 
-struct Vector3;
-
-constexpr Scalar dot(const Vector3& v, const Vector3& w);
-constexpr Vector3 cross(const Vector3& v, const Vector3& w);
-constexpr Scalar distance(const Vector3& a, const Vector3& b);
-
 struct Vector3
 {
     Scalar x;
@@ -34,6 +28,10 @@ struct Vector3
     static constexpr Vector3 forwards()  { return { .z = +1 }; }
     static constexpr Vector3 backwards() { return { .z = -1 }; }
 
+    constexpr Vector3 with_x(Scalar other_x) const { return { other_x, y, z }; }
+    constexpr Vector3 with_y(Scalar other_y) const { return { x, other_y, z }; }
+    constexpr Vector3 with_z(Scalar other_z) const { return { x, y, other_z }; }
+
     constexpr Vector3 operator*(Scalar k) const
     {
         return {
@@ -41,6 +39,11 @@ struct Vector3
             y * k,
             z * k,
         };
+    }
+
+    constexpr Vector3 operator-() const
+    {
+        return { -x, -y, -z };
     }
 
     constexpr Vector3 operator+(const Vector3& v) const
@@ -52,21 +55,20 @@ struct Vector3
         };
     }
 
-    constexpr Vector3 operator-() const
-    {
-        return { -x, -y, -z };
-    }
-
     constexpr Vector3 operator-(const Vector3& v) const
     {
-        return *this + -v;
+        return {
+            x - v.x,
+            y - v.y,
+            z - v.z,
+        };
     }
 
     constexpr bool operator==(const Vector3& v) const
     {
-        return x == v.x
-            && y == v.y
-            && z == v.z;
+        return are_equal(x, v.x)
+            && are_equal(y, v.y)
+            && are_equal(z, v.z);
     }
 
     constexpr Vector3& operator*=(Scalar k)
@@ -86,9 +88,27 @@ struct Vector3
     }
 
 
+    constexpr Scalar dot(const Vector3& v) const
+    {
+        return x * v.x
+            + y * v.y
+            + z * v.z;
+    }
+
+    constexpr Vector3 cross(const Vector3& v) const
+    {
+        return {
+            y * v.z - z * v.y,
+            z * v.x - x * v.z,
+            x * v.y - y * v.x,
+        };
+    }
+
+
     constexpr Scalar squared_norm() const
     {
-        return dot(*this, *this);
+        const Vector3 v = *this;
+        return v.dot(v);
     }
 
     constexpr Scalar norm() const
@@ -105,38 +125,16 @@ struct Vector3
     {
         return *this *= 1 / norm();
     }
-
-
-    constexpr Vector3 with_x(Scalar x)
-    {
-        return { x, this->y, this->z };
-    }
-
-    constexpr Vector3 with_y(Scalar y)
-    {
-        return { this->x, y, this->z };
-    }
-
-    constexpr Vector3 with_z(Scalar z)
-    {
-        return { this->x, this->y, z };
-    }
 };
 
 constexpr Scalar dot(const Vector3& v, const Vector3& w)
 {
-    return v.x * w.x
-        + v.y * w.y
-        + v.z * w.z;
+    return v.dot(w);
 }
 
 constexpr Vector3 cross(const Vector3& v, const Vector3& w)
 {
-    return {
-        v.y * w.z - v.z * w.y,
-        v.z * w.x - v.x * w.z,
-        v.x * w.y - v.y * w.x,
-    };
+    return v.cross(w);
 }
 
 constexpr Scalar distance(const Vector3& a, const Vector3& b)
