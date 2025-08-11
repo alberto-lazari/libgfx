@@ -1,14 +1,12 @@
 #pragma once
 
-#include "gfx.h"
-
-#include "Vector3.h"
 #include "Scalar.h"
+#include "Vector3.h"
 
 namespace gfx
 {
 
-struct GFX_API Quaternion
+struct Quaternion
 {
     Vector3 imaginary;
     Scalar real;
@@ -17,18 +15,23 @@ struct GFX_API Quaternion
     static constexpr Quaternion j() { return { .imaginary = { .y = 1 } }; }
     static constexpr Quaternion k() { return { .imaginary = { .z = 1 } }; }
 
-    constexpr Quaternion with_imaginary(Vector3 new_imaginary) const
+    constexpr Scalar x() const { return imaginary.x; }
+    constexpr Scalar y() const { return imaginary.y; }
+    constexpr Scalar z() const { return imaginary.z; }
+    constexpr Scalar w() const { return real; }
+
+    constexpr Quaternion with_imaginary(const Vector3& new_imaginary) const
     {
         return { new_imaginary, real };
     }
 
-    constexpr Quaternion with_real(Scalar new_real) const
+    constexpr Quaternion with_real(const Scalar new_real) const
     {
         return { imaginary, new_real };
     }
 
 
-    constexpr Quaternion operator*(Scalar k) const
+    constexpr Quaternion operator*(const Scalar k) const
     {
         return { imaginary * k, real * k };
     }
@@ -68,7 +71,7 @@ struct GFX_API Quaternion
             && are_equal(real, q.real);
     }
 
-    constexpr Quaternion& operator*=(Scalar k)
+    constexpr Quaternion& operator*=(const Scalar k)
     {
         imaginary *= k;
         real *= k;
@@ -142,7 +145,7 @@ constexpr Scalar distance(const Quaternion& p, const Quaternion& q)
 } // namespace gfx
 
 // Scaling commutative closure (k q = q k)
-constexpr gfx::Quaternion operator*(gfx::Scalar k, const gfx::Quaternion& q)
+constexpr gfx::Quaternion operator*(const gfx::Scalar k, const gfx::Quaternion& q)
 {
     return q * k;
 }

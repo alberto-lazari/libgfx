@@ -28,11 +28,29 @@ struct Vector3
     static constexpr Vector3 forwards()  { return { .z = +1 }; }
     static constexpr Vector3 backwards() { return { .z = -1 }; }
 
-    constexpr Vector3 with_x(Scalar other_x) const { return { other_x, y, z }; }
-    constexpr Vector3 with_y(Scalar other_y) const { return { x, other_y, z }; }
-    constexpr Vector3 with_z(Scalar other_z) const { return { x, y, other_z }; }
+    /**
+     * Subscript, math-like accessor.
+     *
+     * @param n Index of the elemtent.
+     *          Just like in maths the first index is 1 (v_1, v_2, ...).
+     * @return v_n, or NaN if index is out of bounds.
+     */
+    constexpr Scalar element(const unsigned n) const
+    {
+        switch (n)
+        {
+            case 1: return x;
+            case 2: return y;
+            case 3: return z;
+            default: return NAN;
+        }
+    }
 
-    constexpr Vector3 operator*(Scalar k) const
+    constexpr Vector3 with_x(const Scalar other_x) const { return { other_x, y, z }; }
+    constexpr Vector3 with_y(const Scalar other_y) const { return { x, other_y, z }; }
+    constexpr Vector3 with_z(const Scalar other_z) const { return { x, y, other_z }; }
+
+    constexpr Vector3 operator*(const Scalar k) const
     {
         return {
             x * k,
@@ -71,7 +89,7 @@ struct Vector3
             && are_equal(z, v.z);
     }
 
-    constexpr Vector3& operator*=(Scalar k)
+    constexpr Vector3& operator*=(const Scalar k)
     {
         x *= k;
         y *= k;
@@ -145,7 +163,7 @@ constexpr Scalar distance(const Vector3& a, const Vector3& b)
 } // namespace gfx
 
 // Scaling commutative closure (k v = v k)
-constexpr gfx::Vector3 operator*(gfx::Scalar k, const gfx::Vector3& v)
+constexpr gfx::Vector3 operator*(const gfx::Scalar k, const gfx::Vector3& v)
 {
     return v * k;
 }

@@ -3,12 +3,14 @@
 
 #include "Quaternion.h"
 #include "Ray.h"
+#include "Rotation.h"
 #include "Scalar.h"
 #include "Sphere.h"
 #include "Vector3.h"
 
 using gfx::Quaternion;
 using gfx::Ray;
+using gfx::Rotation;
 using gfx::Scalar;
 using gfx::Sphere;
 using gfx::Vector3;
