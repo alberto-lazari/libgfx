@@ -14,7 +14,7 @@ Notable additions would be:
 
 ## Build and Test
 This is mostly an `inline constexpr` library, so there's very little to compile
-(I made a single `.cpp` file for stdout, just to have something to compile and produce a `.dll` as per requirements).
+(I made a single `.cpp` file for stdout, just to have something to compile and produce a binary to link).
 
 The project provides a single [`test.cpp`](tests/test.cpp) source,
 made up of unit tests for the library. \
