@@ -13,9 +13,9 @@ constexpr bool is_zero(const Scalar k) noexcept { return std::abs(k) < EPSILON; 
 constexpr bool are_equal(const Scalar a, const Scalar b) noexcept { return is_zero(a - b); }
 
 template <typename T>
-constexpr T lerp(const T& a, const T& b, const Scalar alpha) noexcept
+constexpr T lerp(const T& a, const T& b, const Scalar α) noexcept
 {
-    return b * alpha + a * (1 - alpha);
+    return b * α + a * (1 - α);
 }
 
 } // namespace gfx

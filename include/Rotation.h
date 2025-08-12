@@ -29,7 +29,7 @@ public:
 
     static constexpr Rotation from_quaternion(const Quaternion& q) noexcept
     {
-        return { q.normalized() };
+        return q.normalized();
     }
 
     static constexpr Rotation from_axis_angle(const Vector3& â, const Scalar α) noexcept
@@ -85,6 +85,18 @@ public:
         };
     }
 
+
+    constexpr Rotation nlerp(const Rotation& rotation, const Scalar α) const noexcept
+    {
+        const Quaternion& p = _q;
+        const Quaternion& q = rotation._q;
+
+        // Take shortest path
+        const Scalar k = p.dot(q) < 0 ? -1 : 1;
+
+        return lerp(p, k * q, α).normalized();
+    }
+
     /**
      * Combine with rotation, applying the current rotation first.
      */
@@ -115,7 +127,7 @@ public:
 
     constexpr Rotation inverse() const noexcept
     {
-        return { _q.conjugated() };
+        return _q.conjugated();
     }
 
 
@@ -131,6 +143,11 @@ constexpr bool are_equivalent(const Rotation& a, const Rotation& b) noexcept
     const Quaternion& qa = a.as_quaternion();
     const Quaternion& qb = b.as_quaternion();
     return are_equal(qa, qb) || are_equal(qa, -qb);
+}
+
+constexpr Rotation nlerp(const Rotation& a, const Rotation& b, const Scalar α) noexcept
+{
+    return a.nlerp(b, α);
 }
 
 } // namespace gfx
