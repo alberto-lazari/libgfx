@@ -16,28 +16,18 @@ private:
     Quaternion _q;
 
 public:
-    constexpr Rotation()
+    constexpr Rotation() noexcept
         // Null rotation (around the null axis)
         : _q { Vector3::zero(), 1 }
     {
     }
 
-    constexpr Rotation(const Quaternion& q)
+    constexpr Rotation(const Quaternion& q) noexcept
         : _q(q.normalized())
     {
     }
 
-
-    /**
-     * Combine with rotation, applying the current rotation first.
-     */
-    constexpr Rotation then(const Rotation& rotation) const
-    {
-        return rotation.as_quaternion() * as_quaternion();
-    }
-
-
-    static constexpr Rotation from_axis_angle(const Vector3& axis, const Scalar angle)
+    static constexpr Rotation from_axis_angle(const Vector3& axis, const Scalar angle) noexcept
     {
         return Rotation({ axis * std::sin(angle / 2), std::cos(angle / 2) });
     }
@@ -46,7 +36,7 @@ public:
      * Construct rotation from a triple (x, y, z) of eurler angles.
      * Follow Unity's roll, pitch, yaw order (z, x, y).
      */
-    static constexpr Rotation from_euler(const Vector3& angles)
+    static constexpr Rotation from_euler(const Vector3& angles) noexcept
     {
         const Scalar alpha = angles.x;
         const Scalar beta = angles.y;
@@ -60,12 +50,28 @@ public:
     }
 
 
-    constexpr const Quaternion& as_quaternion() const
+    /**
+     * Combine with rotation, applying the current rotation first.
+     */
+    constexpr Rotation then(const Rotation& rotation) const noexcept
+    {
+        return rotation.as_quaternion() * as_quaternion();
+    }
+
+    constexpr Vector3 rotate(const Vector3& v) const noexcept
+    {
+        const Quaternion q = as_quaternion();
+        const Quaternion p = { v, 0 };
+        const Quaternion p1 = q * p * q.conjugated();
+        return p1.imaginary;
+    }
+
+    constexpr const Quaternion& as_quaternion() const noexcept
     {
         return _q;
     }
 
-    constexpr Matrix3 as_matrix3() const
+    constexpr Matrix3 as_matrix3() const noexcept
     {
         const Scalar w = _q.w();
         const Scalar x = _q.x();

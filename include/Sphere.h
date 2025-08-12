@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Vector3.h"
 #include "Scalar.h"
+#include "Vector3.h"
 
 namespace gfx
 {

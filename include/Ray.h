@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Vector3.h"
 #include "Sphere.h"
+#include "Vector3.h"
 
 namespace gfx
 {
@@ -13,35 +13,35 @@ private:
     Vector3 _dir;
 
 public:
-    constexpr Ray()
+    constexpr Ray() noexcept
         : _start(Vector3::origin())
         , _dir(Vector3::zero())
     {
     }
 
-    constexpr Ray(const Vector3& start, const Vector3& dir)
+    constexpr Ray(const Vector3& start, const Vector3& dir) noexcept
         : _start(start)
         , _dir(dir.normalized())
     {
     }
 
-    constexpr const Vector3& start() const { return _start; }
-    constexpr Vector3& start() { return _start; }
-    constexpr Ray& start(const Vector3& start)
+    constexpr const Vector3& start() const noexcept { return _start; }
+    constexpr Vector3& start() noexcept { return _start; }
+    constexpr Ray& start(const Vector3& start) noexcept
     {
         _start = start.normalized();
         return *this;
     }
 
-    constexpr const Vector3& dir() const { return _dir; }
-    constexpr Vector3& dir() { return _dir; }
-    constexpr Ray& dir(const Vector3& dir)
+    constexpr const Vector3& dir() const noexcept { return _dir; }
+    constexpr Vector3& dir() noexcept { return _dir; }
+    constexpr Ray& dir(const Vector3& dir) noexcept
     {
         _dir = dir.normalized();
         return *this;
     }
 
-    constexpr Vector3 intersect(const Sphere& s) const
+    constexpr Vector3 intersect(const Sphere& s) const noexcept
     {
         const Vector3 G = _start;
         const Vector3 d = _dir;

@@ -1,12 +1,11 @@
 #pragma once
 
 #include "gfx.h"
-
 #include "Scalar.h"
 
-#include <ostream>
-#include <format>
 #include <cmath>
+#include <format>
+#include <ostream>
 
 namespace gfx
 {
@@ -17,16 +16,16 @@ struct Vector3
     Scalar y;
     Scalar z;
 
-    static constexpr Vector3 origin()    { return {}; }
-    static constexpr Vector3 zero()      { return {}; }
-    static constexpr Vector3 one()       { return { 1, 1, 1 }; }
-    static constexpr Vector3 infinity()  { return { INFINITY, INFINITY, INFINITY }; }
-    static constexpr Vector3 right()     { return { .x = +1 }; }
-    static constexpr Vector3 left()      { return { .x = -1 }; }
-    static constexpr Vector3 up()        { return { .y = +1 }; }
-    static constexpr Vector3 down()      { return { .y = -1 }; }
-    static constexpr Vector3 forwards()  { return { .z = +1 }; }
-    static constexpr Vector3 backwards() { return { .z = -1 }; }
+    static constexpr Vector3 origin()    noexcept { return {}; }
+    static constexpr Vector3 zero()      noexcept { return {}; }
+    static constexpr Vector3 one()       noexcept { return { 1, 1, 1 }; }
+    static constexpr Vector3 infinity()  noexcept { return { INFINITY, INFINITY, INFINITY }; }
+    static constexpr Vector3 right()     noexcept { return { .x = +1 }; }
+    static constexpr Vector3 left()      noexcept { return { .x = -1 }; }
+    static constexpr Vector3 up()        noexcept { return { .y = +1 }; }
+    static constexpr Vector3 down()      noexcept { return { .y = -1 }; }
+    static constexpr Vector3 forwards()  noexcept { return { .z = +1 }; }
+    static constexpr Vector3 backwards() noexcept { return { .z = -1 }; }
 
     /**
      * Subscript, math-like accessor.
@@ -35,7 +34,7 @@ struct Vector3
      *          Just like in maths the first index is 1 (v_1, v_2, ...).
      * @return v_n, or NaN if index is out of bounds.
      */
-    constexpr Scalar element(const unsigned n) const
+    constexpr Scalar element(const unsigned n) const noexcept
     {
         switch (n)
         {
@@ -46,11 +45,11 @@ struct Vector3
         }
     }
 
-    constexpr Vector3 with_x(const Scalar other_x) const { return { other_x, y, z }; }
-    constexpr Vector3 with_y(const Scalar other_y) const { return { x, other_y, z }; }
-    constexpr Vector3 with_z(const Scalar other_z) const { return { x, y, other_z }; }
+    constexpr Vector3 with_x(const Scalar other_x) const noexcept { return { other_x, y, z }; }
+    constexpr Vector3 with_y(const Scalar other_y) const noexcept { return { x, other_y, z }; }
+    constexpr Vector3 with_z(const Scalar other_z) const noexcept { return { x, y, other_z }; }
 
-    constexpr Vector3 operator*(const Scalar k) const
+    constexpr Vector3 operator*(const Scalar k) const noexcept
     {
         return {
             x * k,
@@ -59,12 +58,12 @@ struct Vector3
         };
     }
 
-    constexpr Vector3 operator-() const
+    constexpr Vector3 operator-() const noexcept
     {
         return { -x, -y, -z };
     }
 
-    constexpr Vector3 operator+(const Vector3& v) const
+    constexpr Vector3 operator+(const Vector3& v) const noexcept
     {
         return {
             x + v.x,
@@ -73,7 +72,7 @@ struct Vector3
         };
     }
 
-    constexpr Vector3 operator-(const Vector3& v) const
+    constexpr Vector3 operator-(const Vector3& v) const noexcept
     {
         return {
             x - v.x,
@@ -82,14 +81,14 @@ struct Vector3
         };
     }
 
-    constexpr bool operator==(const Vector3& v) const
+    constexpr bool operator==(const Vector3& v) const noexcept
     {
         return are_equal(x, v.x)
             && are_equal(y, v.y)
             && are_equal(z, v.z);
     }
 
-    constexpr Vector3& operator*=(const Scalar k)
+    constexpr Vector3& operator*=(const Scalar k) noexcept
     {
         x *= k;
         y *= k;
@@ -97,7 +96,7 @@ struct Vector3
         return *this;
     }
 
-    constexpr Vector3& operator+=(const Vector3& v)
+    constexpr Vector3& operator+=(const Vector3& v) noexcept
     {
         x += v.x;
         y += v.y;
@@ -106,14 +105,14 @@ struct Vector3
     }
 
 
-    constexpr Scalar dot(const Vector3& v) const
+    constexpr Scalar dot(const Vector3& v) const noexcept
     {
         return x * v.x
             + y * v.y
             + z * v.z;
     }
 
-    constexpr Vector3 cross(const Vector3& v) const
+    constexpr Vector3 cross(const Vector3& v) const noexcept
     {
         return {
             y * v.z - z * v.y,
@@ -123,39 +122,39 @@ struct Vector3
     }
 
 
-    constexpr Scalar squared_norm() const
+    constexpr Scalar squared_norm() const noexcept
     {
         const Vector3 v = *this;
         return v.dot(v);
     }
 
-    constexpr Scalar norm() const
+    constexpr Scalar norm() const noexcept
     {
         return std::sqrt(squared_norm());
     }
 
-    constexpr Vector3 normalized() const
+    constexpr Vector3 normalized() const noexcept
     {
         return *this * (1 / norm());
     }
 
-    constexpr Vector3& normalize()
+    constexpr Vector3& normalize() noexcept
     {
         return *this *= 1 / norm();
     }
 };
 
-constexpr Scalar dot(const Vector3& v, const Vector3& w)
+constexpr Scalar dot(const Vector3& v, const Vector3& w) noexcept
 {
     return v.dot(w);
 }
 
-constexpr Vector3 cross(const Vector3& v, const Vector3& w)
+constexpr Vector3 cross(const Vector3& v, const Vector3& w) noexcept
 {
     return v.cross(w);
 }
 
-constexpr Scalar distance(const Vector3& a, const Vector3& b)
+constexpr Scalar distance(const Vector3& a, const Vector3& b) noexcept
 {
     return (b - a).norm();
 }
@@ -163,7 +162,7 @@ constexpr Scalar distance(const Vector3& a, const Vector3& b)
 } // namespace gfx
 
 // Scaling commutative closure (k v = v k)
-constexpr gfx::Vector3 operator*(const gfx::Scalar k, const gfx::Vector3& v)
+constexpr gfx::Vector3 operator*(const gfx::Scalar k, const gfx::Vector3& v) noexcept
 {
     return v * k;
 }

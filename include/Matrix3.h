@@ -12,7 +12,7 @@ private:
     Vector3 _rows[3];
 
 public:
-    constexpr Matrix3()
+    constexpr Matrix3() noexcept
         : _rows {}
     {
     }
@@ -20,20 +20,19 @@ public:
     constexpr Matrix3(
         const Vector3& row1,
         const Vector3& row2,
-        const Vector3& row3
-    )
+        const Vector3& row3) noexcept
         : _rows { row1, row2, row3 }
     {
     }
 
-    constexpr Vector3 row(const unsigned n) const
+    constexpr Vector3 row(const unsigned n) const noexcept
     {
         if (n == 0 || n > 3) return { NAN, NAN, NAN };
 
         return _rows[n - 1];
     }
 
-    constexpr Vector3 col(const unsigned n) const
+    constexpr Vector3 col(const unsigned n) const noexcept
     {
         if (n == 0 || n > 3) return { NAN, NAN, NAN };
 
@@ -44,12 +43,12 @@ public:
         };
     }
 
-    constexpr Scalar element(const unsigned r, const unsigned c) const
+    constexpr Scalar element(const unsigned r, const unsigned c) const noexcept
     {
         return row(r).element(c);
     }
 
-    constexpr Matrix3 operator*(const Scalar k) const
+    constexpr Matrix3 operator*(const Scalar k) const noexcept
     {
         return {
             k * row(1),
@@ -58,7 +57,7 @@ public:
         };
     }
 
-    constexpr Matrix3 operator*(const Matrix3& M) const
+    constexpr Matrix3 operator*(const Matrix3& M) const noexcept
     {
         return {
             { row(1).dot(M.col(1)), row(1).dot(M.col(2)), row(1).dot(M.col(3)) },
@@ -67,7 +66,7 @@ public:
         };
     }
 
-    constexpr Vector3 operator*(const Vector3& v) const
+    constexpr Vector3 operator*(const Vector3& v) const noexcept
     {
         return {
             row(1).dot(v),
@@ -79,7 +78,7 @@ public:
 
 } // namespace gfx
 
-constexpr gfx::Matrix3 operator*(const gfx::Scalar k, const gfx::Matrix3& M)
+constexpr gfx::Matrix3 operator*(const gfx::Scalar k, const gfx::Matrix3& M) noexcept
 {
     return M * k;
 }
