@@ -27,4 +27,6 @@ constexpr T lerp(const T& a, const T& b, const Scalar α) noexcept
     return b * α + a * (1 - α);
 }
 
+constexpr Scalar radians(const Scalar degrees) noexcept { return degrees * M_PI / 180.0; }
+
 } // namespace gfx

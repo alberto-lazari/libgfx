@@ -47,11 +47,21 @@ public:
         const Scalar β = angles.y;
         const Scalar γ = angles.z;
 
-        const Rotation roll = from_axis_angle(Vector3::forwards(), γ);
-        const Rotation pitch = from_axis_angle(Vector3::right(), α);
-        const Rotation yaw = from_axis_angle(Vector3::up(), β);
+        const Rotation roll  = from_axis_angle(Vector3::forwards(), γ);
+        const Rotation pitch = from_axis_angle(Vector3::right(),    α);
+        const Rotation yaw   = from_axis_angle(Vector3::up(),       β);
 
         return roll.then(pitch).then(yaw);
+    }
+
+    static constexpr Rotation from_euler_degrees(const Vector3& angles) noexcept
+    {
+        const Vector3 angles_radians = {
+            radians(angles.x),
+            radians(angles.y),
+            radians(angles.z),
+        };
+        return from_euler(angles_radians);
     }
 
 
