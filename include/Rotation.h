@@ -15,6 +15,11 @@ class Rotation
 private:
     Quaternion _q;
 
+    constexpr Rotation(const Quaternion& q) noexcept
+        : _q(q.normalized())
+    {
+    }
+
 public:
     constexpr Rotation() noexcept
         // Null rotation (around the null axis)
@@ -22,14 +27,11 @@ public:
     {
     }
 
-    constexpr Rotation(const Quaternion& q) noexcept
-        : _q(q.normalized())
-    {
-    }
+    static constexpr Rotation from_quaternion(const Quaternion& q) noexcept { return { q }; }
 
     static constexpr Rotation from_axis_angle(const Vector3& axis, const Scalar angle) noexcept
     {
-        return Rotation({ axis * std::sin(angle / 2), std::cos(angle / 2) });
+        return {{ axis * std::sin(angle / 2), std::cos(angle / 2) }};
     }
 
     /**
@@ -50,26 +52,7 @@ public:
     }
 
 
-    /**
-     * Combine with rotation, applying the current rotation first.
-     */
-    constexpr Rotation then(const Rotation& rotation) const noexcept
-    {
-        return rotation.as_quaternion() * as_quaternion();
-    }
-
-    constexpr Vector3 rotate(const Vector3& v) const noexcept
-    {
-        const Quaternion q = as_quaternion();
-        const Quaternion p = { v, 0 };
-        const Quaternion p1 = q * p * q.conjugated();
-        return p1.imaginary;
-    }
-
-    constexpr const Quaternion& as_quaternion() const noexcept
-    {
-        return _q;
-    }
+    constexpr const Quaternion& as_quaternion() const noexcept { return _q; }
 
     constexpr Matrix3 as_matrix3() const noexcept
     {
@@ -97,6 +80,35 @@ public:
                 0.5f - (x * x + y * y),
             },
         };
+    }
+
+    /**
+     * Combine with rotation, applying the current rotation first.
+     */
+    constexpr Rotation then(const Rotation& rotation) const noexcept
+    {
+        return rotation.as_quaternion() * as_quaternion();
+    }
+
+    /**
+     * Naive approach, using the raw formula and full quaternion products.
+     */
+    constexpr Vector3 naive_rotate(const Vector3& v) const noexcept
+    {
+        const Quaternion q = as_quaternion();
+        const Quaternion p = { v, 0 };
+        const Quaternion p1 = q * p * q.conjugated();
+        return p1.imaginary;
+    }
+
+    /**
+     * Optimized approach, obtained from quaternion product simplification.
+     */
+    constexpr Vector3 rotate(const Vector3& v) const noexcept
+    {
+        const Vector3 w = as_quaternion().imaginary;
+        const Scalar a = as_quaternion().real;
+        return a * a * v + 2 * a * w.cross(v) + w.dot(v) * w - w.cross(v).cross(w);
     }
 };
 
