@@ -13,7 +13,7 @@ Notable additions would be:
 - A proper graphical test (which would require additional knowledge on graphical APIs)
 
 ## Build and Test
-This is mostly an `inline constexpr` library, so there's very little to compile
+This is mostly an `inline constexpr` library, so there's very little to compile ahead of time
 (I made a single `.cpp` file for stdout, just to have something to compile and produce a binary to link).
 
 The project provides a single [`test.cpp`](tests/test.cpp) source,
