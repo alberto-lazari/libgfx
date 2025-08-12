@@ -64,23 +64,25 @@ public:
         const Scalar y = _q.y();
         const Scalar z = _q.z();
 
+        const Scalar ½ = 0.5;
+
         // Of course I did not derive this myself, this is from:
         // https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation#Quaternion-derived_rotation_matrix
         return 2 * Matrix3 {
             {
-                0.5f - (y * y + z * z),
+                ½ - (y * y + z * z),
                 x * y - z * w,
                 x * z + y * w,
             },
             {
                 x * y + z * w,
-                0.5f - (x * x + z * z),
+                ½ - (x * x + z * z),
                 y * z + x * w,
             },
             {
                 x * z + y * w,
                 y * z + x * w,
-                0.5f - (x * x + y * y),
+                ½ - (x * x + y * y),
             },
         };
     }
@@ -138,11 +140,16 @@ public:
     }
 };
 
-constexpr bool are_equivalent(const Rotation& a, const Rotation& b) noexcept
+constexpr bool are_equivalent(const Rotation& a, const Rotation& b, const Scalar ε) noexcept
 {
     const Quaternion& qa = a.as_quaternion();
     const Quaternion& qb = b.as_quaternion();
-    return are_equal(qa, qb) || are_equal(qa, -qb);
+    return are_equal(qa, qb, ε) || are_equal(qa, -qb, ε);
+}
+
+constexpr bool are_equivalent(const Rotation& a, const Rotation& b) noexcept
+{
+    return are_equivalent(a, b, EPSILON);
 }
 
 constexpr Rotation nlerp(const Rotation& a, const Rotation& b, const Scalar α) noexcept

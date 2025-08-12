@@ -10,6 +10,9 @@
 namespace gfx
 {
 
+struct Vector3;
+constexpr bool are_equal(const Vector3& v, const Vector3& w, const Scalar ε) noexcept;
+
 struct Vector3
 {
     Scalar x;
@@ -83,9 +86,7 @@ struct Vector3
 
     constexpr bool operator==(const Vector3& v) const noexcept
     {
-        return are_equal(x, v.x)
-            && are_equal(y, v.y)
-            && are_equal(z, v.z);
+        return are_equal(*this, v);
     }
 
     constexpr Vector3& operator*=(const Scalar k) noexcept
@@ -144,9 +145,11 @@ struct Vector3
     }
 };
 
-constexpr bool are_equal(const Vector3& v, const Vector3& w) noexcept
+constexpr bool are_equal(const Vector3& v, const Vector3& w, const Scalar ε) noexcept
 {
-    return v == w;
+    return are_equal(v.x, w.x, ε)
+        && are_equal(v.y, w.y, ε)
+        && are_equal(v.z, w.z, ε);
 }
 
 constexpr Scalar dot(const Vector3& v, const Vector3& w) noexcept

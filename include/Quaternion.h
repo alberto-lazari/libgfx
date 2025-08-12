@@ -6,6 +6,9 @@
 namespace gfx
 {
 
+struct Quaternion;
+constexpr bool are_equal(const Quaternion& p, const Quaternion& q, const Scalar ε) noexcept;
+
 struct Quaternion
 {
     Vector3 imaginary;
@@ -67,8 +70,7 @@ struct Quaternion
 
     constexpr bool operator==(const Quaternion& q) const noexcept
     {
-        return are_equal(imaginary, q.imaginary)
-            && are_equal(real, q.real);
+        return are_equal(*this, q);
     }
 
     constexpr Quaternion& operator*=(const Scalar k) noexcept
@@ -106,7 +108,7 @@ struct Quaternion
 
     constexpr bool is_rotation() const noexcept
     {
-        return are_equal(squared_norm(), 1);
+        return are_equal<Scalar>(squared_norm(), 1);
     }
 
     constexpr Quaternion inverse() const noexcept
@@ -132,9 +134,10 @@ struct Quaternion
     }
 };
 
-constexpr bool are_equal(const Quaternion& p, const Quaternion& q) noexcept
+constexpr bool are_equal(const Quaternion& p, const Quaternion& q, const Scalar ε) noexcept
 {
-    return p == q;
+    return are_equal(p.imaginary, q.imaginary, ε)
+        && are_equal(p.real, q.real, ε);
 }
 
 constexpr Scalar dot(const Quaternion& p, const Quaternion& q) noexcept
