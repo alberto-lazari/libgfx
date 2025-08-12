@@ -16,7 +16,7 @@ private:
     Quaternion _q;
 
     constexpr Rotation(const Quaternion& q) noexcept
-        : _q(q.normalized())
+        : _q(q)
     {
     }
 
@@ -27,11 +27,14 @@ public:
     {
     }
 
-    static constexpr Rotation from_quaternion(const Quaternion& q) noexcept { return { q }; }
-
-    static constexpr Rotation from_axis_angle(const Vector3& axis, const Scalar angle) noexcept
+    static constexpr Rotation from_quaternion(const Quaternion& q) noexcept
     {
-        return {{ axis * std::sin(angle / 2), std::cos(angle / 2) }};
+        return { q.normalized() };
+    }
+
+    static constexpr Rotation from_axis_angle(const Vector3& â, const Scalar α) noexcept
+    {
+        return {{ â.normalized() * std::sin(α / 2), std::cos(α / 2) }};
     }
 
     /**
@@ -40,13 +43,13 @@ public:
      */
     static constexpr Rotation from_euler(const Vector3& angles) noexcept
     {
-        const Scalar alpha = angles.x;
-        const Scalar beta = angles.y;
-        const Scalar gamma = angles.z;
+        const Scalar α = angles.x;
+        const Scalar β = angles.y;
+        const Scalar γ = angles.z;
 
-        const Rotation roll = from_axis_angle(Vector3::forwards(), gamma);
-        const Rotation pitch = from_axis_angle(Vector3::right(), alpha);
-        const Rotation yaw = from_axis_angle(Vector3::up(), beta);
+        const Rotation roll = from_axis_angle(Vector3::forwards(), γ);
+        const Rotation pitch = from_axis_angle(Vector3::right(), α);
+        const Rotation yaw = from_axis_angle(Vector3::up(), β);
 
         return roll.then(pitch).then(yaw);
     }
@@ -87,17 +90,16 @@ public:
      */
     constexpr Rotation then(const Rotation& rotation) const noexcept
     {
-        return rotation.as_quaternion() * as_quaternion();
+        return rotation._q * _q;
     }
 
     /**
-     * Naive approach, using the raw formula and full quaternion products.
+     * Naïve approach, using the raw formula and full quaternion products.
      */
     constexpr Vector3 naive_rotate(const Vector3& v) const noexcept
     {
-        const Quaternion q = as_quaternion();
         const Quaternion p = { v, 0 };
-        const Quaternion p1 = q * p * q.conjugated();
+        const Quaternion p1 = _q * p * _q.conjugated();
         return p1.imaginary;
     }
 
@@ -106,10 +108,17 @@ public:
      */
     constexpr Vector3 rotate(const Vector3& v) const noexcept
     {
-        const Vector3 w = as_quaternion().imaginary;
-        const Scalar a = as_quaternion().real;
+        const Vector3 w = _q.imaginary;
+        const Scalar a = _q.real;
         return a * a * v + 2 * a * w.cross(v) + w.dot(v) * w - w.cross(v).cross(w);
     }
 };
+
+constexpr bool are_equivalent(const Rotation& a, const Rotation& b) noexcept
+{
+    const Quaternion& qa = a.as_quaternion();
+    const Quaternion& qb = b.as_quaternion();
+    return are_equal(qa, qb) || are_equal(qa, -qb);
+}
 
 } // namespace gfx

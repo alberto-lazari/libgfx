@@ -67,7 +67,7 @@ struct Quaternion
 
     constexpr bool operator==(const Quaternion& q) const noexcept
     {
-        return imaginary == q.imaginary
+        return are_equal(imaginary, q.imaginary)
             && are_equal(real, q.real);
     }
 
@@ -131,6 +131,11 @@ struct Quaternion
         return conjugate() *= (1 / squared_norm());
     }
 };
+
+constexpr bool are_equal(const Quaternion& p, const Quaternion& q) noexcept
+{
+    return p == q;
+}
 
 constexpr Scalar dot(const Quaternion& p, const Quaternion& q) noexcept
 {

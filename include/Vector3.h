@@ -144,6 +144,11 @@ struct Vector3
     }
 };
 
+constexpr bool are_equal(const Vector3& v, const Vector3& w) noexcept
+{
+    return v == w;
+}
+
 constexpr Scalar dot(const Vector3& v, const Vector3& w) noexcept
 {
     return v.dot(w);
