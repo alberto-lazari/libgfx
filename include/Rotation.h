@@ -64,25 +64,25 @@ public:
         const Scalar y = _q.y();
         const Scalar z = _q.z();
 
-        const Scalar ½ = 0.5;
+        const Scalar half = 0.5;
 
         // Of course I did not derive this myself, this is from:
         // https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation#Quaternion-derived_rotation_matrix
         return 2 * Matrix3 {
             {
-                ½ - (y * y + z * z),
+                half - (y * y + z * z),
                 x * y - z * w,
                 x * z + y * w,
             },
             {
                 x * y + z * w,
-                ½ - (x * x + z * z),
+                half - (x * x + z * z),
                 y * z + x * w,
             },
             {
                 x * z + y * w,
                 y * z + x * w,
-                ½ - (x * x + y * y),
+                half - (x * x + y * y),
             },
         };
     }
@@ -91,12 +91,49 @@ public:
     constexpr Rotation nlerp(const Rotation& rotation, const Scalar α) const noexcept
     {
         const Quaternion& p = _q;
-        const Quaternion& q = rotation._q;
+        Quaternion q = rotation._q;
 
         // Take shortest path
-        const Scalar k = p.dot(q) < 0 ? -1 : 1;
+        q = p.dot(q) < 0 ? -q : q;
 
-        return lerp(p, k * q, α).normalized();
+        return lerp(p, q, α).normalized();
+    }
+
+    constexpr Rotation slerp(const Rotation& rotation, const Scalar α) const noexcept
+    {
+        const Quaternion& q1 = _q;
+        Quaternion q2 = rotation._q;
+        const Scalar u = α;
+
+        // Take shortest path
+        const Scalar dot = q1.dot(q2);
+        q2 = dot < 0 ? -q2 : q2;
+
+        // Use nlerp if rotations are too close, to minimize error
+        if (is_zero(dot)) return lerp(q1, q2, u).normalized();
+
+        // q1 dot q2 = cos θ, since q1 and q2 are rotations, having norm = 1
+        const Scalar θ = std::acos(dot);
+
+        // Two distinct ways to compute Slerp, according to:
+        // Ken Shoemake, 1985, Animating Rotation with Quaternion Curves, Section 3.3
+        // https://doi.org/10.1145/325165.325242
+        //
+        //     +------------------------------------+
+        // (1) | Slerp(q1, q2; u) = q1 (q1^-1 q2)^u |
+        //     +------------------------------------+
+        //
+        //     +--------------------------------------------------+
+        //     |                    sin (1 - u) θ      sin u θ    |
+        // (2) | Slerp(q1, q2; u) = ------------- q1 + ------- q2 |
+        //     |                        sin θ           sin θ     |
+        //     +--------------------------------------------------+
+        //
+        // I choose option (2) to avoid defining the power of a quaternion.
+        const Scalar sin_θ = std::sin(θ);
+
+        return std::sin((1 - u) * θ) / sin_θ * q1
+             + std::sin(u * θ)       / sin_θ * q2;
     }
 
     /**
@@ -155,6 +192,11 @@ constexpr bool are_equivalent(const Rotation& a, const Rotation& b) noexcept
 constexpr Rotation nlerp(const Rotation& a, const Rotation& b, const Scalar α) noexcept
 {
     return a.nlerp(b, α);
+}
+
+constexpr Rotation slerp(const Rotation& a, const Rotation& b, const Scalar α) noexcept
+{
+    return a.slerp(b, α);
 }
 
 } // namespace gfx
