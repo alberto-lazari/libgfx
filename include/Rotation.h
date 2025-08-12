@@ -37,8 +37,14 @@ public:
         return {{ â.normalized() * std::sin(α / 2), std::cos(α / 2) }};
     }
 
+    static constexpr Rotation from_axis_angle_degrees(const Vector3& â, const Scalar α) noexcept
+    {
+        const Scalar α_radians = radians(α);
+        return {{ â.normalized() * std::sin(α_radians / 2), std::cos(α_radians / 2) }};
+    }
+
     /**
-     * Construct rotation from a triple (x, y, z) of eurler angles.
+     * Construct rotation from a triple (x, y, z) of Euler angles.
      * Follow Unity's roll, pitch, yaw order (z, x, y).
      */
     static constexpr Rotation from_euler(const Vector3& angles) noexcept
@@ -87,10 +93,10 @@ public:
             {
                 x * y + z * w,
                 half - (x * x + z * z),
-                y * z + x * w,
+                y * z - x * w,
             },
             {
-                x * z + y * w,
+                x * z - y * w,
                 y * z + x * w,
                 half - (x * x + y * y),
             },
