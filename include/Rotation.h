@@ -112,6 +112,18 @@ public:
         const Scalar a = _q.real;
         return a * a * v + 2 * a * w.cross(v) + w.dot(v) * w - w.cross(v).cross(w);
     }
+
+    constexpr Rotation inverse() const noexcept
+    {
+        return { _q.conjugated() };
+    }
+
+
+    constexpr Rotation& invert() noexcept
+    {
+        _q.conjugate();
+        return *this;
+    }
 };
 
 constexpr bool are_equivalent(const Rotation& a, const Rotation& b) noexcept
