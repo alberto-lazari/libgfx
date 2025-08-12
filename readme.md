@@ -30,9 +30,15 @@ I provide a `Makefile` for POSIX environments
 
 It just wraps the CMake commands into a more intuitive interface.
 
+#### Usage
+- `make lib` compiles the dynamic library
+- `make test` compiles the library and runs the unit tests
+- `make clean` cleans the build
+
 ### Windows
 If you just want an IDE to do the work, you can count on VS support for CMake
 (and others, I suppose, like Rider).
+
 
 Here's the [official guide](https://learn.microsoft.com/en-us/cpp/build/cmake-projects-in-visual-studio?view=msvc-170),
 but you should be able to simply open it as a directory and VS should automatically do its magic.
